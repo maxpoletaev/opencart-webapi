@@ -13,7 +13,6 @@
     <div class="content">
       <div id="tabs" class="htabs">
         <a href="#tab-general"><?php echo $tab_general; ?></a>
-        <a href="#tab-images"><?php echo $tab_images; ?></a>
       </div>
       <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
       	<div id="tab-general">

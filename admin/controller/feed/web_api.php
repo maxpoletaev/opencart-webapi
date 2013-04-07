@@ -17,7 +17,6 @@ class ControllerFeedWebApi extends Controller {
 			'text_disabled'       => $this->language->get('text_disabled'),
 			'text_homepage'       => $this->language->get('text_homepage'),
 			'tab_general'         => $this->language->get('tab_general'),
-			'tab_images'          => $this->language->get('tab_images'),
 
 			'entry_status'        => $this->language->get('entry_status'),
 			'entry_key'           => $this->language->get('entry_key'),
