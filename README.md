@@ -3,22 +3,21 @@ Opencart WEB API
 
 This is a small module that adds the ability to remotely work with the OpenCart 1.5.3+ via the REST API.
 
- * Homepage: [http://zenwalker.ru/lab/opencart-webapi/]
- * Sources: [https://github.com/ethernet1/opencart-webapi]
- * Ddocumentation in Russian: [http://zenwalker.ru/lab/opencart-web-api/documentation.html]
+ * Homepage: http://zenwalker.ru/lab/opencart-webapi/
+ * Sources: https://github.com/ethernet1/opencart-webapi
+ * Ddocumentation in Russian: http://zenwalker.ru/lab/opencart-web-api/documentation.html
 
 Features:
 
- * [Get categories list](#get_categories)
- * [Get category info](#get_category)
- * [Get products from category](#get_products)
- * [Get full info from product](#get_product)
+ * [Get categories list](#get-categories)
+ * [Get category info](#get-category-info)
+ * [Get products from category](#get-products)
+ * [Get full info from product](#get-product)
 
 
 Examples
 --------
 
-<div id="#get_categories"></div>
 ### Get categories
 
 Request:
@@ -72,12 +71,11 @@ Answer:
 	}
 
 
-<div id="#get_category"></div>
 ### Get category info
 
 Request:
 
-  http://zen.su/?route=feed/web_api/category&id=1
+  http://example.com/?route=feed/web_api/category&id=1
 
 
 Params:
@@ -100,7 +98,6 @@ Answer:
 
 
 
-<div id="#get_products"></div>
 ### Get products
 
 Request:
@@ -143,7 +140,7 @@ Answer:
 	}
 
 
-<div id="get_product"></div>
+
 ### Get product
 
 Request:
