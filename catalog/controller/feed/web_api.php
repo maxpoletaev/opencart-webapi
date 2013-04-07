@@ -188,7 +188,7 @@ class ControllerFeedWebApi extends Controller {
 				foreach ($option['option_value'] as $option_value) {
 					if (!$option_value['subtract'] || ($option_value['quantity'] > 0)) {
 						if ((($this->config->get('config_customer_price') && $this->customer->isLogged()) || !$this->config->get('config_customer_price')) && (float)$option_value['price']) {
-							$price = $this->currency->format($this->tax->calculate($option_value['price'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+							$price = $this->currency->format($this->tax->calculate($option_value['price'], $product['tax_class_id'], $this->config->get('config_tax')));
 						} else {
 							$price = false;
 						}
@@ -292,6 +292,7 @@ class ControllerFeedWebApi extends Controller {
 					'parent_id'     => $category['parent_id'],
 					'name'          => $category['name'],
 					'image'         => $image,
+					'href'          => $this->url->link('product/category', 'category_id=' . $category['category_id'])
 					'categories'    => $this->getCategoriesTree($category['category_id'], $level)
 				);
 			}
