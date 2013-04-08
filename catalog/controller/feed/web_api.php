@@ -292,7 +292,7 @@ class ControllerFeedWebApi extends Controller {
 					'parent_id'     => $category['parent_id'],
 					'name'          => $category['name'],
 					'image'         => $image,
-					'href'          => $this->url->link('product/category', 'category_id=' . $category['category_id'])
+					'href'          => $this->url->link('product/category', 'category_id=' . $category['category_id']),
 					'categories'    => $this->getCategoriesTree($category['category_id'], $level)
 				);
 			}
