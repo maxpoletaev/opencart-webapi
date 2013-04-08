@@ -5,7 +5,7 @@ class ControllerFeedWebApi extends Controller {
 	# Use print_r($json) instead json_encode($json)
 	private $debug = false;
 
-	public function categories() {
+	public function getCategories() {
 		$this->init();
 		$this->load->model('catalog/category');
 		$json = array('success' => true);
@@ -37,7 +37,7 @@ class ControllerFeedWebApi extends Controller {
 		}
 	}
 
-	public function category() {
+	public function getCategory() {
 		$this->init();
 		$this->load->model('catalog/category');
 		$this->load->model('tool/image');
@@ -46,8 +46,8 @@ class ControllerFeedWebApi extends Controller {
 
 		# -- $_GET params ------------------------------
 		
-		if (isset($this->request->get['id'])) {
-			$category_id = $this->request->get['id'];
+		if (isset($this->request->get['category_id'])) {
+			$category_id = $this->request->get['category_id'];
 		} else {
 			$category_id = 0;
 		}
@@ -57,7 +57,7 @@ class ControllerFeedWebApi extends Controller {
 		$category = $this->model_catalog_category->getCategory($category_id);
 		
 		$json['category'] = array(
-			'id'                    => $category['category_id'],
+			'category_id'           => $category['category_id'],
 			'name'                  => $category['name'],
 			'description'           => $category['description'],
 			'href'                  => $this->url->link('product/category', 'category_id=' . $category['category_id'])
@@ -72,7 +72,7 @@ class ControllerFeedWebApi extends Controller {
 	}
 
 
-	public function products() {
+	public function getProducts() {
 		$this->init();
 		$this->load->model('catalog/product');
 		$this->load->model('tool/image');
@@ -81,8 +81,8 @@ class ControllerFeedWebApi extends Controller {
 
 		# -- $_GET params ------------------------------
 		
-		if (isset($this->request->get['category'])) {
-			$category_id = $this->request->get['category'];
+		if (isset($this->request->get['category_id'])) {
+			$category_id = $this->request->get['category_id'];
 		} else {
 			$category_id = 0;
 		}
@@ -108,7 +108,7 @@ class ControllerFeedWebApi extends Controller {
 			}
 
 			$json['products'][] = array(
-				'id'                    => $product['product_id'],
+				'product_id'            => $product['product_id'],
 				'name'                  => $product['name'],
 				'description'           => $product['description'],
 				'pirce'                 => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
@@ -127,7 +127,7 @@ class ControllerFeedWebApi extends Controller {
 		}
 	}
 
-	public function product() {
+	public function getProduct() {
 		$this->init();
 		$this->load->model('catalog/product');
 		$this->load->model('tool/image');
@@ -135,8 +135,8 @@ class ControllerFeedWebApi extends Controller {
 
 		# -- $_GET params ------------------------------
 		
-		if (isset($this->request->get['id'])) {
-			$product_id = $this->request->get['id'];
+		if (isset($this->request->get['product_id'])) {
+			$product_id = $this->request->get['product_id'];
 		} else {
 			$product_id = 0;
 		}
@@ -232,7 +232,7 @@ class ControllerFeedWebApi extends Controller {
 		}
 
 		$json['product'] = array(
-			'id'                            => $product['product_id'],
+			'product_id'                    => $product['product_id'],
 			'seo_h1'                        => $product['seo_h1'],
 			'name'                          => $product['name'],
 			'manufacturer'                  => $product['manufacturer'],
