@@ -55,6 +55,8 @@ class ControllerFeedWebApi extends Controller {
 		# -- End $_GET params --------------------------
 
 		$category = $this->model_catalog_category->getCategory($category_id);
+
+		/* TODO: Return error if category not exist */
 		
 		$json['category'] = array(
 			'category_id'           => $category['category_id'],
@@ -144,6 +146,8 @@ class ControllerFeedWebApi extends Controller {
 		# -- End $_GET params --------------------------
 
 		$product = $this->model_catalog_product->getProduct($product_id);
+
+		/* TODO: Return error if product not exist */
 
 		# product image
 		if ($product['image']) {
@@ -261,6 +265,82 @@ class ControllerFeedWebApi extends Controller {
 	}
 
 
+	public function addProduct() {
+		$this->loadAdminModel('catalog/product');
+		$language_id = $this->getLanguageId($this->config->get('config_language'));
+
+		$entry_list = array(
+			'model',
+			'sku',
+			'upc',
+			'ean',
+			'jan',
+			'isbn',
+			'mpn',
+			'location',
+			'quantity',
+			'minimum',
+			'subtract',
+			'stock_status_id',
+			'date_available',
+			'manufacturer_id',
+			'shipping',
+			'price',
+			'points',
+			'weight',
+			'weight_class_id',
+			'length',
+			'width',
+			'height',
+			'length_class_id',
+			'status',
+			'tax_class_id',
+			'sort_order',
+			'keyword'
+		);
+
+		$description_list = array(
+			'name',
+			'meta_keyword',
+			'meta_description',
+			'description',
+			'tag',
+			'seo_title',
+			'seo_h1'
+		);
+
+		$data = $this->request->post;
+
+		foreach ($entry_list as $entry) {
+			if (!isset($data[$entry])) {
+				$data[$entry] = '';
+			}
+		}
+
+		foreach ($description_list as $entry) {
+			if (!isset($data[$entry])) {
+				$data['product_description'][$language_id][$entry] = '';
+			} else {
+				$data['product_description'][$language_id][$entry] = $data[$entry];
+			}
+		}
+
+		$this->model_catalog_product->addProduct($data);
+		$this->success('Product created');
+	}
+
+	public function deleteProduct() {
+		$this->loadAdminModel('catalog/product');
+
+		if (isset($this->request->get['product_id'])) {
+			$product_id = $this->request->get['product_id'];
+			$this->model_catalog_product->deleteProduct($product_id);
+
+			$this->success('Product deleted');
+		}
+	}
+
+
 	/**
 	 * Generation of category tree
 	 * 
@@ -304,7 +384,7 @@ class ControllerFeedWebApi extends Controller {
 	/**
 	 * 
 	 */
-	private function init() {
+	private function init($key_required = false) {
 
 		$this->response->addHeader('Content-Type: application/json');
 
@@ -315,12 +395,36 @@ class ControllerFeedWebApi extends Controller {
 		if ($this->config->get('web_api_key') && (!isset($this->request->get['key']) || $this->request->get['key'] != $this->config->get('web_api_key'))) {
 			$this->error(20, 'Invalid secret key');
 		}
+
+		if ($key_required && !$this->config->get('web_api_key')) {
+			$this->error(30, 'This function is not public, set the API KEY');
+		}
+	}
+
+	/**
+	 * Loader admin models
+	 * 
+	 * @param string $model
+	 */
+	private function loadAdminModel($model) {
+		$file  = DIR_APPLICATION . '../admin/model/' . $model . '.php';
+		$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', $model);
+		
+		if (file_exists($file)) {
+			include_once($file);
+			
+			$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
+		} else {
+			trigger_error('Error: Could not load model ' . $model . '!');
+			exit();					
+		}
 	}
 
 	/**
 	 * Error message responser
 	 *
-	 * @param string $message  Error message
+	 * @param string $code    Error code
+	 * @param string $message Error message
 	 */
 	private function error($code = 0, $message = '') {
 
@@ -341,6 +445,41 @@ class ControllerFeedWebApi extends Controller {
 		}
 		
 		exit();
+	}
+
+	/**
+	 * Success message responser
+	 *
+	 * @param string $message Success message
+	 */
+	private function success($message) {
+		header('Content-Type: application/json');
+
+		$json = array(
+			'success'       => true,
+			'message'       => $message
+		);
+
+		if ($this->debug) {
+			echo '<pre>';
+			print_r($json);
+		} else {
+			echo json_encode($json);
+		}
+		
+		exit();
+	}
+
+	/**
+	 * Gets language_id of the code (ru, en, etc)
+	 * Oddly, the appropriate functions in the API was not found
+	 *
+	 * @param  string $lang Language code
+	 * @return int
+	 */
+	private function getLanguageId($lang) {
+		$query = $this->db->query('SELECT `language_id` FROM `' . DB_PREFIX . 'language` WHERE `code` = "'.$lang.'"');
+		return $query->row['language_id'];
 	}
 
 }
