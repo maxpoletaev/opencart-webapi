@@ -3,7 +3,7 @@
 class ControllerFeedWebApi extends Controller {
 
 	# Use print_r($json) instead json_encode($json)
-	private $debug = true;
+	private $debug = false;
 
 	public function getCategories() {
 		$this->init();
@@ -272,6 +272,8 @@ class ControllerFeedWebApi extends Controller {
 
 
 	public function addProduct() {
+		$this->init(true);
+
 		$this->loadAdminModel('catalog/product');
 		$language_id = $this->getLanguageId($this->config->get('config_language'));
 
@@ -335,7 +337,56 @@ class ControllerFeedWebApi extends Controller {
 		$this->success('Product created');
 	}
 
+	public function editProduct() {
+		$this->init(true);
+
+		$this->loadAdminModel('catalog/product');
+		$product_id = $this->request->get['product_id'];
+
+		$product = $this->model_catalog_product->getProduct($product_id);
+		
+		$product = array_merge($product, array('product_description' => $this->model_catalog_product->getProductDescriptions($product_id)));
+		$product = array_merge($product, array('product_option' => $this->model_catalog_product->getProductOptions($product_id)));
+		$product = array_merge($product, array('product_image' =>  $this->model_catalog_product->getProductImages($product_id)));
+		$product = array_merge($product, array('main_category_id' => $this->model_catalog_product->getProductMainCategoryId($product_id)));
+		$product = array_merge($product, array('product_discount' => $this->model_catalog_product->getProductDiscounts($product_id)));
+		$product = array_merge($product, array('product_special' => $this->model_catalog_product->getProductSpecials($product_id)));
+		$product = array_merge($product, array('product_download' => $this->model_catalog_product->getProductDownloads($product_id)));
+		$product = array_merge($product, array('product_category' => $this->model_catalog_product->getProductCategories($product_id)));
+		$product = array_merge($product, array('product_store' => $this->model_catalog_product->getProductStores($product_id)));
+		$product = array_merge($product, array('product_related' => $this->model_catalog_product->getProductRelated($product_id)));
+		$product = array_merge($product, array('product_attribute' => $this->model_catalog_product->getProductAttributes($product_id)));
+
+		$data = $this->request->post;
+
+		foreach ($data as $key=>$value) {
+			$product[$key] = $value;
+		}
+
+		$description_list = array(
+			'name',
+			'meta_keyword',
+			'meta_description',
+			'description',
+			'tag',
+			'seo_title',
+			'seo_h1'
+		);
+
+		foreach ($description_list as $entry) {
+			if (isset($data[$entry])) {
+				$data['product_description'][$language_id][$entry] = $data[$entry];
+			}
+		}
+
+		$this->model_catalog_product->editProduct($product_id, $product);
+		$this->success('Product updated');
+
+	}
+
 	public function deleteProduct() {
+		$this->init(true);
+
 		$this->loadAdminModel('catalog/product');
 
 		if (isset($this->request->get['product_id'])) {
