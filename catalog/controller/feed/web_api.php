@@ -3,7 +3,7 @@
 class ControllerFeedWebApi extends Controller {
 
 	# Use print_r($json) instead json_encode($json)
-	private $debug = false;
+	private $debug = true;
 
 	public function getCategories() {
 		$this->init();
@@ -113,6 +113,7 @@ class ControllerFeedWebApi extends Controller {
 				'product_id'            => $product['product_id'],
 				'name'                  => $product['name'],
 				'description'           => $product['description'],
+				'quantity'              => $product['quantity'],
 				'pirce'                 => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
 				'href'                  => $this->url->link('product/product', 'product_id=' . $product['product_id']),
 				'thumb'                 => $image,
@@ -245,6 +246,7 @@ class ControllerFeedWebApi extends Controller {
 			'points'                        => $product['points'],
 			'image'                         => $image,
 			'images'                        => $images,
+			'quantity'                      => $product['quantity'],
 			'price'                         => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
 			'special'                       => $special,
 			'discounts'                     => $discounts,
