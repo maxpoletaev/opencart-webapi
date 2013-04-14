@@ -56,7 +56,9 @@ class ControllerFeedWebApi extends Controller {
 
 		$category = $this->model_catalog_category->getCategory($category_id);
 
-		/* TODO: Return error if category not exist */
+		if (empty($category['category_id'])) {
+			$this->error(404, 'Category not exist');
+		}
 		
 		$json['category'] = array(
 			'category_id'           => $category['category_id'],
@@ -148,7 +150,9 @@ class ControllerFeedWebApi extends Controller {
 
 		$product = $this->model_catalog_product->getProduct($product_id);
 
-		/* TODO: Return error if product not exist */
+		if (empty($product['product_id'])) {
+			$this->error(404, 'Product not exist');
+		}
 
 		# product image
 		if ($product['image']) {
