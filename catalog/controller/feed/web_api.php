@@ -116,7 +116,7 @@ class ControllerFeedWebApi extends Controller {
 				'name'                  => $product['name'],
 				'description'           => $product['description'],
 				'quantity'              => $product['quantity'],
-				'pirce'                 => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
+				'price'                 => $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'))),
 				'href'                  => $this->url->link('product/product', 'product_id=' . $product['product_id']),
 				'thumb'                 => $image,
 				'special'               => $special,
